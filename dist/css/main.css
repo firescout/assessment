@@ -1,0 +1,16 @@
+.movie-poster {width:100%; background-color: #CCC; cursor: pointer;}
+.movie-poster img {width:100%; cursor: pointer;}
+.movie-item {padding: 1.5em 0;}
+.select2-container {width:100% !important;}
+.text-left {text-align: left;}
+.text-right {text-align: right;}
+.modal-poster {width:100%;}
+.bold {font-weight: bold;}
+.float-left {float: left;}
+.float-right {float: right;}
+.clearboth {clear: both;}
+
+.movie-content {display:none}
+.movie-grid-content {display: block;}
+.movie-list .movie-content {display:block}
+.movie-list .movie-grid-content {display: none;}
