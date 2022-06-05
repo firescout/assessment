@@ -16,6 +16,7 @@ $filters = Movie::getFilters($movies);
         <link href="dist/css/select2.min.css" rel="stylesheet" />
         <link href="dist/css/main.css" rel="stylesheet" />
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
         <script src="dist/js/select2.min.js"></script>
@@ -120,11 +121,13 @@ $filters = Movie::getFilters($movies);
                     <hr />
                     <div class="row">
                         <?php foreach ($movies as $key => $movie) : ?>
+                            <?php $a = array_filter($movie['ratings']); ?>
+                            <?php $rating = array_sum($movie['ratings'])/count($movie['ratings']); ?>
                             <div class="col-md-2 movie" data-title="<?= $movie['title']; ?>" data-genres="<?= implode(' ', $movie['genres']); ?>" data-year="<?= $movie['year']; ?>" data-actors="<?= implode(' ', str_replace(' ','_',$movie['actors'])); ?>">
                                 <div class="movie-item">
                                     <div class="row">
                                         <div class="movie-poster-wrapper col-12">
-                                            <div class="movie-poster" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick='updateModal(<?= $key; ?>)'>
+                                            <div class="movie-poster" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick='updateModal(<?= $key; ?>, <?= round($rating); ?>)'>
                                                 <img src="<?= $movie['posterurl']; ?>" alt="<?= $movie['title']; ?>" />
                                             </div>
                                         </div>
@@ -134,19 +137,35 @@ $filters = Movie::getFilters($movies);
                                                 <div class="col-md-12">
                                                     <h5>Story</h5>
                                                     <p><?= $movie['storyline']; ?></p>
-                                                </div>                                        
-                                                <h5>Actors</h5>
-                                                <div class="col-md-12 text-center">
+                                                </div>
+                                                <hr />
+                                                <div class="col-md-2 text-center">
+                                                    <h5>Actors</h5>
+                                                </div>
+                                                <div class="col-md-10 text-center">
                                                     <?php foreach($movie['actors'] as $actor) : ?>
-                                                        <span class="badge rounded-pill text-bg-secondary"><?= $actor; ?></span>
+                                                        <span class="badge rounded-pill text-bg-primary"><?= $actor; ?></span>
                                                     <?php endforeach; ?>
                                                 </div>
-                                                <h5>Genres</h5>
-                                                <div class="col-md-12 text-center">
+                                                <hr />
+                                                <div class="col-md-2 text-center">
+                                                    <h5>Genres</h5>
+                                                </div>
+                                                <div class="col-md-10 text-center">
                                                     <?php foreach($movie['genres'] as $genre) : ?>
                                                         <span class="badge rounded-pill text-bg-secondary"><?= $genre; ?></span>
                                                     <?php endforeach; ?>
                                                 </div>
+                                                <hr />
+                                                <div class="col-md-2 text-center">
+                                                    <h5>Rating</h5>
+                                                </div>
+                                                <div class="col-md-10 text-center">
+                                                    <?php for($i=0;$i<round($rating);$i++) :?>
+                                                        <i class="bi bi-star-fill rating-star"></i>
+                                                    <?php endfor; ?>
+                                                </div>
+                                                <hr />
                                                 <div class="col-md-12 clearboth">
                                                     <p class="text-left float-left"><small class="bold modal-year"><?= $movie['year']; ?></small></p>
                                                     <p class="text-right float-right"><small class="bold modal-rated"><?= ($movie['contentRating'] != '') ? 'Rated: ': ''; ?><?= $movie['contentRating']; ?></small></p>
@@ -184,13 +203,26 @@ $filters = Movie::getFilters($movies);
                                         <div class="col-md-12">
                                             <h5>Story</h5>
                                             <p class="modal-story"></p>
-                                        </div>                                        
-                                        <h5>Actors</h5>
-                                        <div class="col-md-12 text-center modal-actors">
                                         </div>
-                                        <h5>Genres</h5>
-                                        <div class="col-md-12 text-center modal-genre">
+                                        <hr />
+                                        <div class="col-md-2 text-center">
+                                            <h5>Actors</h5>
                                         </div>
+                                        <div class="col-md-10 text-center modal-actors">
+                                        </div>
+                                        <hr />
+                                        <div class="col-md-2 text-center">
+                                            <h5>Genres</h5>
+                                        </div>
+                                        <div class="col-md-10 text-center modal-genre">
+                                        </div>
+                                        <hr />
+                                        <div class="col-md-2 text-center">
+                                            <h5>Rating</h5>
+                                        </div>
+                                        <div class="col-md-10 text-center modal-rating">
+                                        </div>
+                                        <hr />
                                         <div class="col-md-12 clearboth">
                                             <p class="text-left float-left"><small class="bold modal-year"></small></p>
                                             <p class="text-right float-right"><small class="bold modal-rated"></small></p>
@@ -207,7 +239,7 @@ $filters = Movie::getFilters($movies);
             </div>
             <script>
                 var movies = <?= json_encode($movies); ?>;
-                function updateModal(key) {
+                function updateModal(key, rating) {
                     clearModal();
                     var movie = movies[key];
                     $('.modal-title').text(movie.title);
@@ -223,6 +255,9 @@ $filters = Movie::getFilters($movies);
                     $.each(movie.actors, function(k,item){
                         $('.modal-actors').append('<span class="badge rounded-pill text-bg-primary">'+item+'</span> ');
                     });
+                    for(var i=1; i<rating;i++) {
+                        $('.modal-rating').append('<i class="bi bi-star-fill rating-star"></i>');
+                    }
                 }
             </script>
         </main>

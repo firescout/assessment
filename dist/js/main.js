@@ -89,5 +89,6 @@ function clearModal() {
     $('.modal-rated').text('');
     $('.modal-genre').html('');
     $('.modal-actors').html('');
+    $('.modal-rating').html('');
 
 }
